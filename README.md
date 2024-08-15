@@ -6,5 +6,5 @@
 
 安装方法： 私聊机器人第一行，安装成功后第二行激活
 
-#installp https://github.com/KimYx0207/RaiseCard.git
+#installp https://github.com/xiaoxishui123/location.git 
 #scanp
