@@ -1,1 +1,1 @@
-from .location import *
+from . ip_location_api import *
