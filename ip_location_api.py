@@ -25,7 +25,7 @@ class IPLocation(Plugin):
             raise e
 
     def on_command(self, e_context: EventContext):
-        command = e_context["command"]
+        command = e_context.get("command", "")
         if command.startswith("获取IP位置"):
             # 提取IP地址，默认为8.8.8.8
             ip_address = command.split(" ")[1] if len(command.split(" ")) > 1 else "8.8.8.8"
