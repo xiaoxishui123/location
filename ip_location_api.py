@@ -21,12 +21,13 @@ class IPLocation(Plugin):
             self.handlers[Event.ON_COMMAND] = self.on_command
             logger.info("[IPLocation] inited.")
         except Exception as e:
-            logger.warn("[IPLocation] init failed, ignore.")
+            logger.warn(f"[IPLocation] init failed, error: {e}")
             raise e
 
     def on_command(self, e_context: EventContext):
         command = e_context["command"]
         if command.startswith("获取IP位置"):
+            # 提取IP地址，默认为8.8.8.8
             ip_address = command.split(" ")[1] if len(command.split(" ")) > 1 else "8.8.8.8"
             logger.info(f"[IPLocation] fetching location for IP: {ip_address}")
             self.call_ip_location_api(ip_address, e_context)
@@ -39,16 +40,21 @@ class IPLocation(Plugin):
             response = requests.get(request_url)
             if response.status_code == 200:
                 data = response.json()
-                location_info = (
-                    f"IP地理位置定位结果：\n"
-                    f"城市: {data['data'].get('city', '未知')}\n"
-                    f"国家: {data['data'].get('country', '未知')}\n"
-                    f"国家英文名称: {data['data'].get('country_english', '未知')}\n"
-                    f"IP地址: {data['data'].get('ip', '未知')}\n"
-                    f"互联网服务提供商: {data['data'].get('isp', '未知')}\n"
-                    f"省份: {data['data'].get('province', '未知')}"
-                )
-                e_context["reply"] = Reply(ReplyType.TEXT, location_info)
+                # 检查返回的数据结构
+                if 'data' in data:
+                    location_info = (
+                        f"IP地理位置定位结果：\n"
+                        f"城市: {data['data'].get('city', '未知')}\n"
+                        f"国家: {data['data'].get('country', '未知')}\n"
+                        f"国家英文名称: {data['data'].get('country_english', '未知')}\n"
+                        f"IP地址: {data['data'].get('ip', '未知')}\n"
+                        f"互联网服务提供商: {data['data'].get('isp', '未知')}\n"
+                        f"省份: {data['data'].get('province', '未知')}"
+                    )
+                    e_context["reply"] = Reply(ReplyType.TEXT, location_info)
+                else:
+                    logger.warn(f"[IPLocation] unexpected response structure: {data}")
+                    e_context["reply"] = Reply(ReplyType.TEXT, "返回的数据结构不正确。")
             else:
                 logger.warn(f"[IPLocation] request failed, status code: {response.status_code}")
                 e_context["reply"] = Reply(ReplyType.TEXT, f"请求失败，状态码：{response.status_code}")
