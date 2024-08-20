@@ -5,7 +5,7 @@ import requests
 # 定义一个函数来调用IP地理位置定位API
 def call_ip_location_api(ip_address):
     # API的基本URL
-    base_url = "https://app.ipdatacloud.com/v2/free_query" 
+    base_url = "https://app.ipdatacloud.com/v2/free_query"
     
     # 完整的请求URL，包含需要查询的IP地址
     request_url = f"{base_url}?ip={ip_address}"
